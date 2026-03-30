@@ -9,24 +9,27 @@
     <!-- React & ReactDOM CDN -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <!-- Babel CDN (For JSX translation in browser) -->
+    <!-- Babel CDN (JSX 변환용) -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <!-- Lucide Icons -->
+    <!-- Lucide Icons CDN -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&display=swap');
         body { font-family: 'Noto Sans KR', sans-serif; }
         .animate-in { animation: fadeIn 0.5s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* 벵골어 폰트 지원 */
+        .font-bengali { font-family: sans-serif; }
     </style>
 </head>
 <body class="bg-gray-50">
     <div id="root"></div>
 
     <script type="text/babel">
+        // 브라우저 환경에서는 import 문을 쓰지 않고 React 객체에서 직접 꺼내 씁니다.
         const { useState, useEffect } = React;
 
-        // 아이콘 컴포넌트 유틸리티 (SVG 직접 사용으로 호환성 확보)
+        // 아이콘 컴포넌트
         const Icon = ({ name, className }) => {
             useEffect(() => {
                 if (window.lucide) {
@@ -47,7 +50,7 @@
             ];
 
             const Card = ({ title, children, iconName, colorClass, bgColorClass, iconColorClass }) => (
-                <div className={`bg-white rounded-xl shadow-sm border-l-4 ${colorClass} p-6 mb-6 hover:shadow-md transition-shadow`}>
+                <div className={`bg-white rounded-xl shadow-sm border-l-4 ${colorClass} p-6 mb-6 hover:shadow-md transition-all duration-300`}>
                     <div className="flex items-center mb-4">
                         <div className={`p-2 rounded-lg ${bgColorClass}`}>
                             <Icon name={iconName} className={`w-6 h-6 ${iconColorClass}`} />
@@ -59,192 +62,210 @@
             );
 
             return (
-                <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
-                    {/* Header */}
-                    <div className="max-w-4xl mx-auto text-center mb-12">
-                        <span className="inline-block px-4 py-1 rounded-full bg-indigo-100 text-indigo-700 font-semibold text-sm mb-4 uppercase tracking-wider">
-                            Week 9 Study Guide
+                <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
+                    {/* 상단 헤더 */}
+                    <header className="text-center mb-12">
+                        <span className="inline-block px-4 py-1 rounded-full bg-indigo-100 text-indigo-700 font-semibold text-xs mb-4 uppercase tracking-widest">
+                            WEEK 9 : LESSON GUIDE
                         </span>
-                        <h1 className="text-4xl font-extrabold text-gray-900 sm:text-5xl mb-4">
+                        <h1 className="text-4xl font-extrabold text-gray-900 sm:text-5xl mb-4 tracking-tight">
                             최후의 만찬, 고별 설교 및 기도
                         </h1>
-                        <p className="text-xl text-gray-600 font-medium">
+                        <p className="text-xl text-gray-500 font-medium font-bengali">
                             নবম সপ্তাহ : শেষ ভোজ, বিদায়ী ভাষণ এবং প্রার্থনা
                         </p>
-                    </div>
+                    </header>
 
-                    {/* Navigation Tabs */}
-                    <div className="max-w-4xl mx-auto mb-10">
-                        <div className="flex flex-wrap justify-center gap-2 border-b border-gray-200">
-                            {[
-                                { id: 'summary', label: '주요 요약 (Summary)' },
-                                { id: 'comparison', label: '유월절 vs 성찬 (Comparison)' },
-                                { id: 'worldview', label: '세상 속의 제자 (Worldview)' }
-                            ].map((tab) => (
-                                <button
-                                    key={tab.id}
-                                    onClick={() => setActiveTab(tab.id)}
-                                    className={`px-6 py-3 text-sm font-medium transition-colors border-b-2 ${
-                                        activeTab === tab.id 
-                                        ? 'border-indigo-600 text-indigo-600' 
-                                        : 'border-transparent text-gray-500 hover:text-indigo-400'
-                                    }`}
-                                >
-                                    {tab.label}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
+                    {/* 탭 메뉴 */}
+                    <nav className="flex justify-center space-x-1 mb-10 bg-white p-1 rounded-xl shadow-sm border border-gray-100 w-fit mx-auto">
+                        {[
+                            { id: 'summary', label: '주요 요약', icon: 'book-open' },
+                            { id: 'comparison', label: '비교 분석', icon: 'arrow-right-left' },
+                            { id: 'worldview', label: '세상 속의 제자', icon: 'globe' }
+                        ].map((tab) => (
+                            <button
+                                key={tab.id}
+                                onClick={() => setActiveTab(tab.id)}
+                                className={`flex items-center px-6 py-2.5 rounded-lg text-sm font-bold transition-all ${
+                                    activeTab === tab.id 
+                                    ? 'bg-indigo-600 text-white shadow-md' 
+                                    : 'text-gray-500 hover:bg-gray-50'
+                                }`}
+                            >
+                                <Icon name={tab.icon} className="w-4 h-4 mr-2" />
+                                {tab.label}
+                            </button>
+                        ))}
+                    </nav>
 
-                    {/* Content Sections */}
-                    <div className="max-w-4xl mx-auto">
+                    {/* 컨텐츠 영역 */}
+                    <main className="animate-in">
                         {activeTab === 'summary' && (
-                            <div className="animate-in grid md:grid-cols-2 gap-6">
+                            <div className="grid md:grid-cols-2 gap-6">
                                 <Card 
                                     title="유월절 어린 양 예수" 
                                     iconName="anchor" 
                                     colorClass="border-red-500"
-                                    bgColorClass="bg-red-100"
-                                    iconColorClass="text-red-500"
+                                    bgColorClass="bg-red-50"
+                                    iconColorClass="text-red-600"
                                 >
-                                    <p className="text-gray-600 mb-3 text-sm italic font-Bengali">যীশুকে নিস্তারপর্বীয় মেষशাবক বলার কারণ:</p>
-                                    <ul className="space-y-2">
-                                        {['유월절 기간에 죽으심', '자신의 살을 주심', '자신의 피를 주심'].map((item, idx) => (
-                                            <li key={idx} className="flex items-start">
-                                                <Icon name="check-circle-2" className="w-5 h-5 text-red-500 mr-2 flex-shrink-0" />
-                                                <span className="text-gray-700">{item}</span>
+                                    <p className="text-gray-500 mb-3 text-xs font-semibold uppercase tracking-wider">Reasoning (Bengali):</p>
+                                    <p className="text-sm italic text-gray-600 mb-4 font-bengali">যীশুকে নিস্তারপর্বীয় মেষশাবক বলার কারণ:</p>
+                                    <ul className="space-y-3">
+                                        {['유월절 기간에 돌아가심', '자신의 살을 먹게 하심', '자신의 피를 흘려 주심'].map((item, idx) => (
+                                            <li key={idx} className="flex items-center text-gray-700">
+                                                <Icon name="check-circle" className="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
+                                                <span className="font-medium">{item}</span>
                                             </li>
                                         ))}
                                     </ul>
                                 </Card>
 
                                 <Card 
-                                    title="새 계명: 사랑" 
+                                    title="새 계명: 사랑 (Love)" 
                                     iconName="heart" 
                                     colorClass="border-pink-500"
-                                    bgColorClass="bg-pink-100"
-                                    iconColorClass="text-pink-500"
+                                    bgColorClass="bg-pink-50"
+                                    iconColorClass="text-pink-600"
                                 >
-                                    <p className="text-gray-700 leading-relaxed mb-4">
+                                    <p className="text-gray-800 leading-relaxed font-bold mb-4 text-lg">
                                         "내가 너희를 사랑한 것 같이 너희도 서로 사랑하라."
                                     </p>
-                                    <div className="bg-pink-50 p-3 rounded-lg border border-pink-100 text-sm text-pink-700">
-                                        <strong>실천의 본:</strong> 제자들의 발을 씻겨 주심으로써 섬김의 사랑을 증명하셨습니다.
+                                    <div className="bg-white border border-pink-100 p-4 rounded-lg shadow-inner">
+                                        <p className="text-sm text-gray-600 italic leading-relaxed">
+                                            <strong>예수님의 모범:</strong> 제자들의 발을 직접 씻겨 주심으로써, 말뿐만이 아닌 겸손과 희생의 사랑을 몸소 보여주셨습니다.
+                                        </p>
                                     </div>
                                 </Card>
 
                                 <Card 
-                                    title="겟세마네의 고뇌" 
-                                    iconName="cross" 
-                                    colorClass="border-gray-700"
-                                    bgColorClass="bg-gray-100"
-                                    iconColorClass="text-gray-700"
+                                    title="겟세마네의 고난" 
+                                    iconName="cloud-rain" 
+                                    colorClass="border-slate-700"
+                                    bgColorClass="bg-slate-100"
+                                    iconColorClass="text-slate-700"
                                 >
-                                    <p className="text-gray-600 mb-2 text-sm">고통의 원인:</p>
-                                    <div className="space-y-2">
-                                        <div className="flex items-center text-gray-700">
-                                            <Icon name="chevron-right" className="w-4 h-4 mr-1 text-gray-400" />
-                                            <span>구원을 위한 대가 지불</span>
-                                        </div>
-                                        <div className="flex items-center text-gray-700">
-                                            <Icon name="chevron-right" className="w-4 h-4 mr-1 text-gray-400" />
-                                            <span>고난의 잔을 수용</span>
-                                        </div>
+                                    <p className="text-gray-500 mb-2 text-xs font-bold tracking-widest uppercase">Key Points:</p>
+                                    <div className="space-y-3">
+                                        {[
+                                            '인류 구원을 위한 무거운 대가 지불',
+                                            '고난의 잔(십자가)을 받아들이는 과정',
+                                            '하나님의 뜻과 인간적 고통 사이의 순종'
+                                        ].map((text, i) => (
+                                            <div key={i} className="flex items-center text-gray-700">
+                                                <div className="w-1.5 h-1.5 bg-slate-400 rounded-full mr-3"></div>
+                                                <span>{text}</span>
+                                            </div>
+                                        ))}
                                     </div>
                                 </Card>
 
                                 <Card 
-                                    title="예수님과의 연합" 
-                                    iconName="users" 
+                                    title="연합의 원리" 
+                                    iconName="link" 
                                     colorClass="border-blue-500"
-                                    bgColorClass="bg-blue-100"
-                                    iconColorClass="text-blue-500"
+                                    bgColorClass="bg-blue-50"
+                                    iconColorClass="text-blue-600"
                                 >
-                                    <p className="text-gray-700 font-medium">사랑과 순종 (Love & Obedience)</p>
-                                    <p className="text-sm text-gray-600 mt-2">
-                                        예수님에 대한 사랑과 말씀에 대한 순종이 우리를 그분과 내면적으로 깊이 일치(연합)시킵니다.
+                                    <h4 className="text-gray-800 font-bold mb-2">사랑과 순종 (Love & Obedience)</h4>
+                                    <p className="text-sm text-gray-600 leading-relaxed">
+                                        예수님에 대한 사랑은 그분의 말씀에 순종하는 것으로 나타납니다. 이 사랑과 순종의 결과는 우리 마음속에서 주님과 깊이 하나가 되는 '내면적 일치'입니다.
                                     </p>
                                 </Card>
                             </div>
                         )}
 
                         {activeTab === 'comparison' && (
-                            <div className="animate-in bg-white rounded-xl shadow-sm overflow-hidden border border-gray-200">
-                                <div className="bg-indigo-600 px-6 py-4">
-                                    <h3 className="text-white font-bold flex items-center">
-                                        <Icon name="arrow-right-left" className="w-5 h-5 mr-2" />
+                            <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
+                                <div className="bg-indigo-600 px-8 py-5 flex items-center justify-between">
+                                    <h3 className="text-white text-xl font-bold flex items-center">
+                                        <Icon name="layout" className="w-6 h-6 mr-3" />
                                         유월절 vs 주의 만찬 (성찬식)
                                     </h3>
+                                    <span className="text-indigo-100 text-xs font-medium border border-indigo-400 px-2 py-1 rounded">비교 분석표</span>
                                 </div>
                                 <div className="overflow-x-auto">
-                                    <table className="w-full text-left">
-                                        <thead className="bg-gray-50 border-b border-gray-200">
-                                            <tr>
-                                                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">항목</th>
-                                                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-red-600">유월절 (Passover)</th>
-                                                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-indigo-600">주의 만찬 (Communion)</th>
+                                    <table className="w-full text-left border-collapse">
+                                        <thead>
+                                            <tr className="bg-gray-50 border-b border-gray-100">
+                                                <th className="px-8 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest">구분</th>
+                                                <th className="px-8 py-4 text-xs font-bold text-red-500 uppercase tracking-widest">유월절 (Passover)</th>
+                                                <th className="px-8 py-4 text-xs font-bold text-indigo-600 uppercase tracking-widest">주의 만찬 (Communion)</th>
                                             </tr>
                                         </thead>
-                                        <tbody className="divide-y divide-gray-200 text-sm">
+                                        <tbody className="divide-y divide-gray-50">
                                             {comparisonData.map((row, idx) => (
-                                                <tr key={idx} className="hover:bg-gray-50 transition-colors">
-                                                    <td className="px-6 py-4 font-bold text-gray-700 bg-gray-50/50">{row.label}</td>
-                                                    <td className="px-6 py-4 text-gray-600">{row.passover}</td>
-                                                    <td className="px-6 py-4 text-gray-600 font-medium">{row.communion}</td>
+                                                <tr key={idx} className="hover:bg-indigo-50/30 transition-colors">
+                                                    <td className="px-8 py-5 font-bold text-gray-700 text-sm bg-gray-50/30 w-1/4">{row.label}</td>
+                                                    <td className="px-8 py-5 text-gray-600 text-sm">{row.passover}</td>
+                                                    <td className="px-8 py-5 text-indigo-900 text-sm font-medium">{row.communion}</td>
                                                 </tr>
                                             ))}
                                         </tbody>
                                     </table>
                                 </div>
-                                <div className="p-4 bg-yellow-50 text-xs text-yellow-800 italic">
-                                    * 공통점: 구원의 기억, 피의 중요성, 무교병(순결) 사용, 하나님의 언약 확증
+                                <div className="p-6 bg-amber-50 border-t border-amber-100">
+                                    <div className="flex items-start">
+                                        <Icon name="sparkles" className="w-5 h-5 text-amber-500 mr-3 flex-shrink-0 mt-0.5" />
+                                        <p className="text-sm text-amber-800 leading-relaxed font-medium">
+                                            <strong>공통 상징:</strong> 구원의 기억, 보혈의 능력, 순결(무교병), 하나님의 거룩한 언약 확증
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                         )}
 
                         {activeTab === 'worldview' && (
-                            <div className="animate-in space-y-6">
-                                <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-8 text-white shadow-lg">
-                                    <h2 className="text-2xl font-bold mb-6 flex items-center">
-                                        <Icon name="sun" className="w-7 h-7 mr-3" />
-                                        세상과 제자의 관계
+                            <div className="space-y-8">
+                                <div className="bg-gradient-to-br from-indigo-700 via-indigo-800 to-slate-900 rounded-3xl p-8 text-white shadow-2xl relative overflow-hidden">
+                                    <div className="absolute top-0 right-0 p-10 opacity-10">
+                                        <Icon name="sun" className="w-40 h-40" />
+                                    </div>
+                                    <h2 className="text-3xl font-bold mb-8 flex items-center relative z-10">
+                                        <Icon name="shield-check" className="w-8 h-8 mr-4 text-indigo-300" />
+                                        그리스도인의 세상 속 위치
                                     </h2>
-                                    <div className="grid md:grid-cols-3 gap-6 text-sm">
+                                    <div className="grid md:grid-cols-3 gap-6 relative z-10">
                                         {[
-                                            { t: '세상에 있으나', d: '물리적으로 세상에 살지만, 소속과 가치관은 하늘나라에 있습니다. (In but not of)' },
-                                            { t: '본받지 말라', d: '세상의 타락한 가치관을 따르지 않고, 하나님의 뜻을 분별하여 변화된 삶을 삽니다.' },
-                                            { t: '소금과 빛', d: '세상을 외면하지 않고 부패를 방지하며 어둠을 밝히는 적극적인 역할을 수행합니다.' }
+                                            { t: 'In the World', d: '세상에 살고 있으나 세상에 속하지 않은(Not of the World) 하늘 시민권자의 정체성을 가집니다.' },
+                                            { t: 'Transformation', d: '세상의 타락한 문화나 가치관을 따르지 않고, 하나님의 선하신 뜻을 분별하여 삶을 변화시킵니다.' },
+                                            { t: 'Salt & Light', d: '세상을 외면하는 것이 아니라, 부패를 막는 소금과 어둠을 밝히는 빛의 사명을 적극적으로 감당합니다.' }
                                         ].map((item, i) => (
-                                            <div key={i} className="bg-white/10 backdrop-blur-md p-5 rounded-xl border border-white/20">
-                                                <h4 className="font-bold text-lg mb-2">{item.t}</h4>
-                                                <p className="text-indigo-50 leading-relaxed">{item.d}</p>
+                                            <div key={i} className="bg-white/10 backdrop-blur-xl p-6 rounded-2xl border border-white/20 hover:bg-white/20 transition-all cursor-default">
+                                                <h4 className="font-black text-indigo-200 mb-3 tracking-tighter text-lg">{item.t}</h4>
+                                                <p className="text-sm text-indigo-50 leading-relaxed">{item.d}</p>
                                             </div>
                                         ))}
                                     </div>
                                 </div>
 
-                                <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                                    <h3 className="font-bold text-gray-800 mb-4 flex items-center">
-                                        <Icon name="info" className="w-5 h-5 mr-2 text-indigo-500" />
-                                        성경적 통찰 (Insight)
-                                    </h3>
-                                    <p className="text-gray-600 text-sm italic">
-                                        "많은 종교 지도자들이 예수님을 반대했지만, 일부는 마음속으로 그분을 지지했습니다. 선한 일을 멈추지 않을 때, 하나님께서는 반드시 동역자와 지지자를 예비하십니다."
-                                    </p>
+                                <div className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-6">
+                                    <div className="bg-indigo-50 p-4 rounded-full flex-shrink-0">
+                                        <Icon name="lightbulb" className="w-8 h-8 text-indigo-600" />
+                                    </div>
+                                    <div>
+                                        <h3 className="font-bold text-gray-900 text-lg mb-1">성경적 통찰: 선한 지지자</h3>
+                                        <p className="text-gray-600 leading-relaxed italic text-sm">
+                                            "종교 지도자들의 거센 반대 속에서도 니고데모나 아리마대 요셉처럼 은밀히 예수님을 지지한 이들이 있었습니다. 진실된 선을 행할 때 하나님은 반드시 동역자를 예비하십니다."
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                         )}
-                    </div>
+                    </main>
 
-                    {/* Footer */}
-                    <div className="max-w-4xl mx-auto mt-16 pt-8 border-t border-gray-200 text-center text-gray-400 text-sm">
-                        <p>© 2024 Study Guide Week 9 - Theological Insight & Education</p>
-                    </div>
+                    {/* 푸터 */}
+                    <footer className="mt-20 pt-8 border-t border-gray-200 text-center">
+                        <p className="text-gray-400 text-xs font-bold tracking-widest uppercase mb-1 italic">Theological Education Series</p>
+                        <p className="text-gray-300 text-[10px]">© 2024 Study Guide Week 9 | Designed for Spiritual Growth</p>
+                    </footer>
                 </div>
             );
         };
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
+        // 앱 렌더링
+        const rootElement = document.getElementById('root');
+        const root = ReactDOM.createRoot(rootElement);
         root.render(<App />);
     </script>
 </body>
